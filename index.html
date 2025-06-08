@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visualizador de Mensajes</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="menu" onclick="mostrarConversaciones()">☰</div>
+
+    <h1>Tu Conversación de hoy:</h1>
+    <div class="line"></div>
+
+    <div class="message-box" id="messageBox">
+      <div class="message">&gt; WAWA</div>
+      <div class="message">&gt; BOT</div>
+    </div>
+    <div>
+      <button
+        class="end-button"
+        onclick="guardarConversacion(), limpiarConversacion()"
+      >
+        Terminada
+      </button>
+    </div>
+
+    <form class="input-form" onsubmit="enviarMensaje(event)">
+      <label for="messageInput">Escribe tu mensaje:</label>
+      <input
+        type="text"
+        id="messageInput"
+        placeholder="Escribe tu mensaje aquí..."
+        required
+      />
+    </form>
+
+    <script src="script.js"></script>
+  </body>
+</html>
