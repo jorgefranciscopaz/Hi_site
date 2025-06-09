@@ -58,3 +58,18 @@ h1 {
 .end-button:hover {
   background-color: #079992;
 }
+
+.read-button {
+  background-color: #60a3bc;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.read-button:hover {
+  background-color: #3c6382;
+}

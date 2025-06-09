@@ -25,7 +25,7 @@
       </button>
     </div>
 
-    <form class="input-form" onsubmit="enviarMensaje(event)">
+    <form class="input-form" onsubmit="enviarMensaje(event), leerMensajes()">
       <label for="messageInput">Escribe tu mensaje:</label>
       <input
         type="text"
@@ -34,6 +34,9 @@
         required
       />
     </form>
+
+    // Botón para escuchar la conversación
+    <button class="read-button" onclick="leerMensajes()">🔊 Escuchar conversación</button>
 
     <script src="script.js"></script>
   </body>
