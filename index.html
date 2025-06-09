@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="menu" onclick="mostrarConversaciones()">☰</div>
+    <div class="menu" onclick="abrirModal()">☰</div>
 
     <h1>Tu Conversación de hoy:</h1>
     <div class="line"></div>
@@ -16,16 +16,15 @@
       <div class="message">&gt; WAWA</div>
       <div class="message">&gt; BOT</div>
     </div>
-    <div>
-      <button
-        class="end-button"
-        onclick="guardarConversacion(), limpiarConversacion()"
-      >
-        Terminada
-      </button>
-    </div>
 
-    <form class="input-form" onsubmit="enviarMensaje(event), leerMensajes()">
+    <button
+      class="end-button"
+      onclick="guardarConversacion(); limpiarConversacion();"
+    >
+      Terminada
+    </button>
+
+    <form class="input-form" onsubmit="enviarMensaje(event); leerMensajes();">
       <label for="messageInput">Escribe tu mensaje:</label>
       <input
         type="text"
@@ -35,9 +34,25 @@
       />
     </form>
 
-    // Botón para escuchar la conversación
-    <button class="read-button" onclick="leerMensajes()">🔊 Escuchar conversación</button>
+    <div class="language-selector-wrapper">
+      <label for="languageSelector">Selecciona el idioma de lectura:</label>
+      <select id="languageSelector"></select>
+      <button class="language-button" onclick="leerMensajes()">
+        🔊 Leer mensajes
+      </button>
+    </div>
 
+    <!-- Modal para conversaciones guardadas -->
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="cerrarModal()">&times;</span>
+        <h2>Conversaciones guardadas</h2>
+        <div id="conversacionesContainer"></div>
+        <button class="end-button" onclick="borrarHistorial()">
+          🗑️ Limpiar historial
+        </button>
+      </div>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>

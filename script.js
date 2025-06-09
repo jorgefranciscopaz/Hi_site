@@ -1,37 +1,51 @@
-let texto = "";
+// Inicializar selector
+const selector = document.getElementById("languageSelector");
 
-function guardarConversacion() {
+function cargarVoces() {
+  const voces = speechSynthesis.getVoices();
+  selector.innerHTML = "";
+
+  voces.forEach((voz, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = `${voz.name} [${voz.lang}]`;
+    selector.appendChild(option);
+  });
+}
+
+function leerMensajes() {
   const mensajes = document.querySelectorAll(".message");
+  if (mensajes.length === 0) {
+    alert("No hay mensajes para leer.");
+    return;
+  }
+
+  let texto = "";
   mensajes.forEach((msg) => {
-    texto += msg.textContent + "\n";
+    texto += msg.textContent + ". ";
   });
 
-  const fecha = new Date().toLocaleString();
-  console.log("Conversación guardada el: " + fecha);
-  console.log(texto);
+  const utterance = new SpeechSynthesisUtterance(texto);
+  utterance.rate = 1;
+  const voces = speechSynthesis.getVoices();
+  const vozSeleccionada = voces[selector.value];
 
-  alert("✅ Conversación guardada correctamente\n" + fecha);
-}
-
-function limpiarConversacion() {
-  const mensajes = document.querySelectorAll(".message");
-  mensajes.forEach((msg) => msg.remove());
-
-  console.log("Conversación limpiada.");
-  alert("✅ Conversación limpiada correctamente");
-}
-
-function mostrarConversaciones() {
-  if (texto === "") {
-    alert("No hay mensajes para mostrar.");
-  } else {
-    alert("Conversación guardada:\n" + texto);
+  if (vozSeleccionada) {
+    utterance.voice = vozSeleccionada;
+    utterance.lang = vozSeleccionada.lang;
   }
+
+  speechSynthesis.speak(utterance);
+}
+
+if (speechSynthesis.getVoices().length > 0) {
+  cargarVoces();
+} else {
+  speechSynthesis.onvoiceschanged = cargarVoces;
 }
 
 function enviarMensaje(event) {
   event.preventDefault();
-
   const input = document.getElementById("messageInput");
   const mensaje = input.value.trim();
 
@@ -46,37 +60,101 @@ function enviarMensaje(event) {
   nuevoMensaje.textContent = `> ${mensaje}`;
   messageBox.appendChild(nuevoMensaje);
 
-  input.value = ""; // limpiar campo de texto
+  input.value = "";
 }
 
-
-function leerMensajes() {
+function guardarConversacion() {
   const mensajes = document.querySelectorAll(".message");
+  if (mensajes.length === 0) return;
 
-  if (mensajes.length === 0) {
-    alert("No hay mensajes para leer.");
+  let contenido = [];
+  mensajes.forEach((msg) => {
+    contenido.push(msg.textContent);
+  });
+
+  const fecha = new Date().toISOString().split("T")[0];
+  let conversaciones = JSON.parse(localStorage.getItem("conversaciones")) || [];
+
+  conversaciones.push({ fecha: fecha, mensajes: contenido });
+  localStorage.setItem("conversaciones", JSON.stringify(conversaciones));
+  alert("✅ Conversación guardada correctamente");
+}
+
+function limpiarConversacion() {
+  document.getElementById("messageBox").innerHTML = "";
+  alert("✅ Conversación limpiada correctamente");
+}
+
+function mostrarConversaciones() {
+  document.getElementById("sidebar").classList.remove("hidden");
+  window.open("sidebar.html", "sidebar", "width=400,height=600");
+  cargarConversacionesGuardadas();
+}
+
+function cerrarSidebar() {
+  document.getElementById("sidebar").classList.add("hidden");
+}
+
+function cargarConversacionesGuardadas() {
+  const container = document.getElementById("conversacionesContainer");
+  container.innerHTML = "";
+
+  const conversaciones =
+    JSON.parse(localStorage.getItem("conversaciones")) || [];
+
+  if (conversaciones.length === 0) {
+    container.innerHTML = "<p>No hay conversaciones guardadas.</p>";
     return;
   }
 
-  let texto = "";
-  mensajes.forEach((msg) => {
-    texto += msg.textContent + ". ";
+  conversaciones.forEach((conv, index) => {
+    const itemDiv = document.createElement("div");
+    itemDiv.className = "historial-item";
+    itemDiv.innerHTML = `
+      <span>${conv.fecha}</span>
+      <span class="flecha">&#10148;</span>
+    `;
+
+    const contenidoDiv = document.createElement("div");
+    contenidoDiv.className = "contenido-oculto";
+    contenidoDiv.id = `contenido-${index}`;
+    contenidoDiv.innerHTML = conv.mensajes
+      .map((m) => `<div>${m}</div>`)
+      .join("");
+
+    itemDiv.addEventListener("click", () => {
+      const visible = contenidoDiv.style.display === "block";
+      contenidoDiv.style.display = visible ? "none" : "block";
+
+      const flecha = itemDiv.querySelector(".flecha");
+      flecha.classList.toggle("expandido", !visible);
+    });
+
+    container.appendChild(itemDiv);
+    container.appendChild(contenidoDiv);
   });
-
-  const utterance = new SpeechSynthesisUtterance(texto);
-  utterance.lang = "es_US"; 
-  utterance.rate = 1; // velocidad de lectura (1 es normal)
-
-  const voices = window.speechSynthesis.getVoices();
-
-  //Se instancia la voz femenina soportada por Google
-  const femenineVoice = voices.find(voice => voice.name === "Google español de Estados Unidos");
-  if (femenineVoice) {
-    utterance.voice = femenineVoice;
-  } else {
-    console.warn("No se encontró la voz femenina preferida.");
-  }
-  window.speechSynthesis.speak(utterance);
-
-  speechSynthesis.getVoices().forEach((voz, i) => console.log(i, voz.name, voz.lang));
 }
+
+function abrirModal() {
+  document.getElementById("myModal").style.display = "block";
+  cargarConversacionesGuardadas();
+}
+
+function cerrarModal() {
+  document.getElementById("myModal").style.display = "none";
+}
+
+function borrarHistorial() {
+  if (confirm("¿Estás seguro de que quieres borrar todo el historial?")) {
+    localStorage.removeItem("conversaciones");
+    cargarConversacionesGuardadas();
+    alert("✅ Historial eliminado correctamente.");
+  }
+}
+
+window.onclick = function (event) {
+  const modal = document.getElementById("myModal");
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+};
