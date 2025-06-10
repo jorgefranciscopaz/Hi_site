@@ -1,10 +1,12 @@
-// Inicializar selector
+// Importar Firebase
+const db = firebase.database();
+
+// Inicializar selector de idioma
 const selector = document.getElementById("languageSelector");
 
 function cargarVoces() {
   const voces = speechSynthesis.getVoices();
   selector.innerHTML = "";
-
   voces.forEach((voz, index) => {
     const option = document.createElement("option");
     option.value = index;
@@ -19,22 +21,18 @@ function leerMensajes() {
     alert("No hay mensajes para leer.");
     return;
   }
-
   let texto = "";
   mensajes.forEach((msg) => {
     texto += msg.textContent + ". ";
   });
-
   const utterance = new SpeechSynthesisUtterance(texto);
   utterance.rate = 1;
   const voces = speechSynthesis.getVoices();
   const vozSeleccionada = voces[selector.value];
-
   if (vozSeleccionada) {
     utterance.voice = vozSeleccionada;
     utterance.lang = vozSeleccionada.lang;
   }
-
   speechSynthesis.speak(utterance);
 }
 
@@ -48,33 +46,51 @@ function enviarMensaje(event) {
   event.preventDefault();
   const input = document.getElementById("messageInput");
   const mensaje = input.value.trim();
-
   if (mensaje === "") {
     alert("Por favor, escribe un mensaje antes de enviar.");
     return;
   }
-
-  const messageBox = document.getElementById("messageBox");
-  const nuevoMensaje = document.createElement("div");
-  nuevoMensaje.className = "message";
-  nuevoMensaje.textContent = `> ${mensaje}`;
-  messageBox.appendChild(nuevoMensaje);
-
+  const timestamp = Date.now();
+  db.ref("mensajes/" + timestamp).set({
+    texto: mensaje,
+    fecha: new Date().toISOString()
+  })
+  .then(() => {
+    console.log("✅ Mensaje guardado en Firebase");
+  })
+  .catch((error) => {
+    console.error("❌ Error al guardar en Firebase:", error);
+  });
   input.value = "";
 }
+
+function escucharMensajesFirebase() {
+  db.ref("mensajes").on("child_added", (snapshot) => {
+    const datos = snapshot.val();
+    const nuevoMensaje = document.createElement("div");
+    nuevoMensaje.className = "message";
+    nuevoMensaje.textContent = `> ${datos.texto}`;
+    document.getElementById("messageBox").appendChild(nuevoMensaje);
+    scrollAlFinal();
+  });
+}
+
+function scrollAlFinal() {
+  const box = document.getElementById("messageBox");
+  box.scrollTop = box.scrollHeight;
+}
+
+escucharMensajesFirebase();
 
 function guardarConversacion() {
   const mensajes = document.querySelectorAll(".message");
   if (mensajes.length === 0) return;
-
   let contenido = [];
   mensajes.forEach((msg) => {
     contenido.push(msg.textContent);
   });
-
   const fecha = new Date().toISOString().split("T")[0];
   let conversaciones = JSON.parse(localStorage.getItem("conversaciones")) || [];
-
   conversaciones.push({ fecha: fecha, mensajes: contenido });
   localStorage.setItem("conversaciones", JSON.stringify(conversaciones));
   alert("✅ Conversación guardada correctamente");
@@ -82,6 +98,7 @@ function guardarConversacion() {
 
 function limpiarConversacion() {
   document.getElementById("messageBox").innerHTML = "";
+  db.ref("mensajes").remove();
   alert("✅ Conversación limpiada correctamente");
 }
 
@@ -98,38 +115,25 @@ function cerrarSidebar() {
 function cargarConversacionesGuardadas() {
   const container = document.getElementById("conversacionesContainer");
   container.innerHTML = "";
-
-  const conversaciones =
-    JSON.parse(localStorage.getItem("conversaciones")) || [];
-
+  const conversaciones = JSON.parse(localStorage.getItem("conversaciones")) || [];
   if (conversaciones.length === 0) {
     container.innerHTML = "<p>No hay conversaciones guardadas.</p>";
     return;
   }
-
   conversaciones.forEach((conv, index) => {
     const itemDiv = document.createElement("div");
     itemDiv.className = "historial-item";
-    itemDiv.innerHTML = `
-      <span>${conv.fecha}</span>
-      <span class="flecha">&#10148;</span>
-    `;
-
+    itemDiv.innerHTML = `<span>${conv.fecha}</span><span class="flecha">&#10148;</span>`;
     const contenidoDiv = document.createElement("div");
     contenidoDiv.className = "contenido-oculto";
     contenidoDiv.id = `contenido-${index}`;
-    contenidoDiv.innerHTML = conv.mensajes
-      .map((m) => `<div>${m}</div>`)
-      .join("");
-
+    contenidoDiv.innerHTML = conv.mensajes.map((m) => `<div>${m}</div>`).join("");
     itemDiv.addEventListener("click", () => {
       const visible = contenidoDiv.style.display === "block";
       contenidoDiv.style.display = visible ? "none" : "block";
-
       const flecha = itemDiv.querySelector(".flecha");
       flecha.classList.toggle("expandido", !visible);
     });
-
     container.appendChild(itemDiv);
     container.appendChild(contenidoDiv);
   });
