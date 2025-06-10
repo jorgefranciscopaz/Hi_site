@@ -14,13 +14,21 @@
 
     <div class="message-box" id="messageBox"></div>
 
-    <button class="end-button" onclick="guardarConversacion(); limpiarConversacion();">
+    <button
+      class="end-button"
+      onclick="guardarConversacion(); limpiarConversacion();"
+    >
       Terminada
     </button>
 
     <form class="input-form" onsubmit="enviarMensaje(event);">
       <label for="messageInput">Escribe tu mensaje:</label>
-      <input type="text" id="messageInput" placeholder="Escribe tu mensaje aquí..." required />
+      <input
+        type="text"
+        id="messageInput"
+        placeholder="Escribe tu mensaje aquí..."
+        required
+      />
     </form>
 
     <div class="language-selector-wrapper">
@@ -44,6 +52,8 @@
     </div>
 
     <!-- CONFIGURACIÓN Y SETEO DE FIREBASE -->
+    <!-- Texto de ejemplo solo para confirmar la validacion de mis contribuciones -->
+
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script>
@@ -55,7 +65,7 @@
         storageBucket: "wawabot-2b504.firebasestorage.app",
         messagingSenderId: "166875284458",
         appId: "1:166875284458:web:fa052e5efb499a72aba893",
-        measurementId: "G-MFDH19KX8S"
+        measurementId: "G-MFDH19KX8S",
       };
       firebase.initializeApp(firebaseConfig);
     </script>
