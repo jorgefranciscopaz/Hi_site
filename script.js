@@ -1,4 +1,4 @@
-// Importar Firebase
+// Firebase compat (debe estar definido en el HTML antes de este script)
 const db = firebase.database();
 
 // Inicializar selector de idioma

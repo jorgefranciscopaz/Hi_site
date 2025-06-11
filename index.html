@@ -14,21 +14,13 @@
 
     <div class="message-box" id="messageBox"></div>
 
-    <button
-      class="end-button"
-      onclick="guardarConversacion(); limpiarConversacion();"
-    >
+    <button class="end-button" onclick="guardarConversacion(); limpiarConversacion();">
       Terminada
     </button>
 
     <form class="input-form" onsubmit="enviarMensaje(event);">
       <label for="messageInput">Escribe tu mensaje:</label>
-      <input
-        type="text"
-        id="messageInput"
-        placeholder="Escribe tu mensaje aquí..."
-        required
-      />
+      <input type="text" id="messageInput" placeholder="Escribe tu mensaje aquí..." required />
     </form>
 
     <div class="language-selector-wrapper">
@@ -51,25 +43,23 @@
       </div>
     </div>
 
-    <!-- CONFIGURACIÓN Y SETEO DE FIREBASE -->
-    <!-- Texto de ejemplo solo para confirmar la validacion de mis contribuciones -->
-
+    <!-- Firebase SDK compat -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script>
       const firebaseConfig = {
-        apiKey: "AIzaSyCTe_Cav7mx5QGNrv4MU5ZdeOF9pOYvi-w",
-        authDomain: "wawabot-2b504.firebaseapp.com",
-        databaseURL: "https://wawabot-2b504-default-rtdb.firebaseio.com",
-        projectId: "wawabot-2b504",
-        storageBucket: "wawabot-2b504.firebasestorage.app",
-        messagingSenderId: "166875284458",
-        appId: "1:166875284458:web:fa052e5efb499a72aba893",
-        measurementId: "G-MFDH19KX8S",
+        apiKey: "AIzaSyCStxpdrM-1JUDytr_5e-kGXOryio7UV2k",
+        authDomain: "wawabot-f1358.firebaseapp.com",
+        databaseURL: "https://wawabot-f1358-default-rtdb.firebaseio.com",
+        projectId: "wawabot-f1358",
+        storageBucket: "wawabot-f1358.firebasestorage.app",
+        messagingSenderId: "959879050826",
+        appId: "1:959879050826:web:cc6468563e186426a498b3",
+        measurementId: "G-L0CNG96XXD"
       };
+
       firebase.initializeApp(firebaseConfig);
     </script>
-
     <script src="script.js"></script>
   </body>
 </html>
