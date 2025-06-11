@@ -9,19 +9,10 @@
   <body>
     <div class="menu" onclick="abrirModal()">☰</div>
 
-    <h1>Tu Conversación de hoy:</h1>
+    <h1>Datos recibidos en tiempo real:</h1>
     <div class="line"></div>
 
     <div class="message-box" id="messageBox"></div>
-
-    <button class="end-button" onclick="guardarConversacion(); limpiarConversacion();">
-      Terminada
-    </button>
-
-    <form class="input-form" onsubmit="enviarMensaje(event);">
-      <label for="messageInput">Escribe tu mensaje:</label>
-      <input type="text" id="messageInput" placeholder="Escribe tu mensaje aquí..." required />
-    </form>
 
     <div class="language-selector-wrapper">
       <label for="languageSelector">Selecciona el idioma de lectura:</label>
@@ -57,7 +48,6 @@
         appId: "1:959879050826:web:cc6468563e186426a498b3",
         measurementId: "G-L0CNG96XXD"
       };
-
       firebase.initializeApp(firebaseConfig);
     </script>
     <script src="script.js"></script>

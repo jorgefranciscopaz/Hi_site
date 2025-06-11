@@ -42,28 +42,7 @@ if (speechSynthesis.getVoices().length > 0) {
   speechSynthesis.onvoiceschanged = cargarVoces;
 }
 
-function enviarMensaje(event) {
-  event.preventDefault();
-  const input = document.getElementById("messageInput");
-  const mensaje = input.value.trim();
-  if (mensaje === "") {
-    alert("Por favor, escribe un mensaje antes de enviar.");
-    return;
-  }
-  const timestamp = Date.now();
-  db.ref("mensajes/" + timestamp).set({
-    texto: mensaje,
-    fecha: new Date().toISOString()
-  })
-  .then(() => {
-    console.log("✅ Mensaje guardado en Firebase");
-  })
-  .catch((error) => {
-    console.error("❌ Error al guardar en Firebase:", error);
-  });
-  input.value = "";
-}
-
+// FUNCIONALIDAD SOLO LECTURA DESDE FIREBASE
 function escucharMensajesFirebase() {
   db.ref("mensajes").on("child_added", (snapshot) => {
     const datos = snapshot.val();
