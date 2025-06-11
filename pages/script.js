@@ -48,7 +48,7 @@ function escucharMensajesFirebase() {
     const datos = snapshot.val();
     const nuevoMensaje = document.createElement("div");
     nuevoMensaje.className = "message";
-    nuevoMensaje.textContent = `> ${datos.texto}`;
+    nuevoMensaje.textContent = `${datos.texto}`;
     document.getElementById("messageBox").appendChild(nuevoMensaje);
     scrollAlFinal();
   });
