@@ -1,8 +1,9 @@
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(120deg, #e0f7fa, #ffffff);
+  background: url("/src/images/desktop_background.png") no-repeat center center fixed;
+  background-size: cover;
   margin: 0;
-  padding: 20px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,17 +11,27 @@ body {
   overflow-x: hidden;
 }
 
+.overlay {
+  background-color: rgba(255, 255, 255, 0.88);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  max-width: 700px;
+  margin: auto;
+  text-align: center;
+  margin-top: 6vh;
+}
+
 h1 {
-  margin-top: 60px;
   font-size: 32px;
-  color: #1a3c40;
+  color: #e67e22;
   text-align: center;
 }
 
 .line {
   width: 80%;
   height: 4px;
-  background: linear-gradient(to right, #00bcd4, #4dd0e1);
+  background: linear-gradient(to right, #e67e22, #f5b041);
   margin: 16px 0 30px;
   border-radius: 2px;
 }
@@ -41,7 +52,7 @@ h1 {
 
 .message {
   font-size: 22px;
-  color: #00796b;
+  color: #e67e22;
   font-weight: bold;
   text-align: center;
 }
@@ -58,14 +69,14 @@ h1 {
   padding: 10px 15px;
   font-size: 16px;
   border-radius: 10px;
-  border: 1px solid #b2bec3;
+  border: 1px solid #e59866;
   width: 250px;
-  background-color: #f0f4f8;
+  background-color: #fef5e7;
   transition: border-color 0.3s;
 }
 
 .language-button {
-  background-color: #00acc1;
+  background-color: #e67e22;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -73,11 +84,11 @@ h1 {
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  box-shadow: 0 3px 6px rgba(0, 172, 193, 0.4);
+  box-shadow: 0 3px 6px rgba(230, 126, 34, 0.4);
 }
 
 .language-button:hover {
-  background-color: #008b9a;
+  background-color: #d35400;
 }
 
 @media (max-width: 600px) {

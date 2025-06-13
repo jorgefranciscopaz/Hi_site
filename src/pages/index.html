@@ -7,19 +7,21 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>Frase detectada por el guante:</h1>
-    <div class="line"></div>
+    <div class="overlay">
+      <h1>Frase detectada por el guante:</h1>
+      <div class="line"></div>
 
-    <div class="message-box" id="messageBox">
-      <div class="message" id="oracionTexto">Esperando datos...</div>
-    </div>
+      <div class="message-box" id="messageBox">
+        <div class="message" id="oracionTexto">Esperando datos...</div>
+      </div>
 
-    <div class="language-selector-wrapper">
-      <label for="languageSelector">Selecciona el idioma de lectura:</label>
-      <select id="languageSelector"></select>
-      <button class="language-button" onclick="leerMensajes()">
-        🔊 Leer oración
-      </button>
+      <div class="language-selector-wrapper">
+        <label for="languageSelector">Selecciona el idioma de lectura:</label>
+        <select id="languageSelector"></select>
+        <button class="language-button" onclick="leerMensajes()">
+          🔊 Leer oración
+        </button>
+      </div>
     </div>
 
     <!-- Firebase SDK compat -->
@@ -40,14 +42,12 @@
       firebase.initializeApp(firebaseConfig);
       const db = firebase.database();
 
-      // Escuchar valor de guante/oracion_actual
       db.ref("guante/oracion_actual").on("value", (snapshot) => {
         const valor = snapshot.val();
         const mensajeDiv = document.getElementById("oracionTexto");
         mensajeDiv.textContent = valor ? `> ${valor}` : "Sin datos...";
       });
 
-      // Sintetizar voz
       const selector = document.getElementById("languageSelector");
       function cargarVoces() {
         const voces = speechSynthesis.getVoices();
