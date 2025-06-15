@@ -1,82 +1,58 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Visualizador de Guante</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="overlay">
-      <h1>Frase detectada por el guante:</h1>
-      <div class="line"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traductor de Guante</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="overlay">
+    <h1>Frase detectada por el guante:</h1>
+    <div class="line"></div>
 
-      <div class="message-box" id="messageBox">
-        <div class="message" id="oracionTexto">Esperando datos...</div>
-      </div>
-
-      <div class="language-selector-wrapper">
-        <label for="languageSelector">Selecciona el idioma de lectura:</label>
-        <select id="languageSelector"></select>
-        <button class="language-button" onclick="leerMensajes()">
-          🔊 Leer oración
-        </button>
-      </div>
+    <div class="message-box">
+      <div class="message" id="oracionTexto">Esperando datos...</div>
     </div>
 
-    <!-- Firebase SDK compat -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyCStxpdrM-1JUDytr_5e-kGXOryio7UV2k",
-        authDomain: "wawabot-f1358.firebaseapp.com",
-        databaseURL: "https://wawabot-f1358-default-rtdb.firebaseio.com",
-        projectId: "wawabot-f1358",
-        storageBucket: "wawabot-f1358.firebasestorage.app",
-        messagingSenderId: "959879050826",
-        appId: "1:959879050826:web:cc6468563e186426a498b3",
-        measurementId: "G-L0CNG96XXD"
-      };
+    <div class="language-selector-wrapper">
+      <label for="languageSelector">Selecciona el idioma de lectura:</label>
+      <select id="languageSelector"></select>
+      <button class="language-button" onclick="leerMensajes()">
+        <span id="iconoSonido">🔊</span> Leer oración
+      </button>
+    </div>
 
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.database();
+    <div id="visualizadorAudio" class="audio-visualizer">
+      <div class="barra"></div>
+      <div class="barra"></div>
+      <div class="barra"></div>
+      <div class="barra"></div>
+      <div class="barra"></div>
+    </div>
+  </div>
 
-      db.ref("guante/oracion_actual").on("value", (snapshot) => {
-        const valor = snapshot.val();
-        const mensajeDiv = document.getElementById("oracionTexto");
-        mensajeDiv.textContent = valor ? `> ${valor}` : "Sin datos...";
-      });
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCStxpdrM-1JUDytr_5e-kGXOryio7UV2k",
+      authDomain: "wawabot-f1358.firebaseapp.com",
+      databaseURL: "https://wawabot-f1358-default-rtdb.firebaseio.com",
+      projectId: "wawabot-f1358",
+      storageBucket: "wawabot-f1358.appspot.com",
+      messagingSenderId: "959879050826",
+      appId: "1:959879050826:web:cc6468563e186426a498b3"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-      const selector = document.getElementById("languageSelector");
-      function cargarVoces() {
-        const voces = speechSynthesis.getVoices();
-        selector.innerHTML = "";
-        voces.forEach((voz, index) => {
-          const option = document.createElement("option");
-          option.value = index;
-          option.textContent = `${voz.name} [${voz.lang}]`;
-          selector.appendChild(option);
-        });
-      }
-      if (speechSynthesis.getVoices().length > 0) {
-        cargarVoces();
-      } else {
-        speechSynthesis.onvoiceschanged = cargarVoces;
-      }
-
-      function leerMensajes() {
-        const texto = document.getElementById("oracionTexto").textContent.replace(/^> /, "");
-        const utterance = new SpeechSynthesisUtterance(texto);
-        utterance.rate = 1;
-        const voces = speechSynthesis.getVoices();
-        const vozSeleccionada = voces[selector.value];
-        if (vozSeleccionada) {
-          utterance.voice = vozSeleccionada;
-          utterance.lang = vozSeleccionada.lang;
-        }
-        speechSynthesis.speak(utterance);
-      }
-    </script>
-  </body>
+    db.ref("guante/oracion_actual").on("value", (snapshot) => {
+      const valor = snapshot.val();
+      document.getElementById("oracionTexto").textContent = valor ? `> ${valor}` : "Sin datos...";
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
 </html>

@@ -1,36 +1,35 @@
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: url("/images/desktop_background.png") no-repeat center center
-    fixed;
+  background: url("/images/desktop_background.png") no-repeat center center fixed;
   background-size: cover;
   margin: 0;
   padding: 0;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
 .overlay {
-  background-color: rgba(255, 255, 255, 0.88);
-  padding: 2rem;
+  background: rgba(255, 255, 255, 0.25);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  max-width: 700px;
-  margin: auto;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 2rem;
   text-align: center;
-  margin-top: 6vh;
+  max-width: 700px;
+  width: 90%;
 }
 
 h1 {
   font-size: 32px;
   color: #e67e22;
-  text-align: center;
 }
 
 .line {
-  width: 80%;
+  width: 100%;
   height: 4px;
   background: linear-gradient(to right, #e67e22, #f5b041);
   margin: 16px 0 30px;
@@ -38,42 +37,31 @@ h1 {
 }
 
 .message-box {
-  background-color: #ffffff;
-  padding: 30px;
-  width: 90%;
-  max-width: 600px;
+  background: rgba(255, 255, 255, 0.6);
   border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  margin-bottom: 25px;
-  max-height: 300px;
-  overflow-y: auto;
-  position: relative;
-  transition: all 0.3s ease;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px;
 }
 
 .message {
   font-size: 22px;
   color: #e67e22;
   font-weight: bold;
-  text-align: center;
 }
 
 .language-selector-wrapper {
   display: flex;
   flex-direction: column;
+  gap: 10px;
   align-items: center;
-  gap: 12px;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 #languageSelector {
-  padding: 10px 15px;
+  padding: 10px;
+  border-radius: 8px;
   font-size: 16px;
-  border-radius: 10px;
-  border: 1px solid #e59866;
-  width: 250px;
-  background-color: #fef5e7;
-  transition: border-color 0.3s;
 }
 
 .language-button {
@@ -84,24 +72,55 @@ h1 {
   border-radius: 30px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 3px 6px rgba(230, 126, 34, 0.4);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .language-button:hover {
-  background-color: #d35400;
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(230, 126, 34, 0.5);
 }
 
-@media (max-width: 600px) {
-  .message-box {
-    padding: 20px;
-  }
+.vibrando {
+  animation: vibrar 0.4s linear;
+}
 
-  .language-selector-wrapper {
-    width: 90%;
-  }
+@keyframes vibrar {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  50% { transform: rotate(-5deg); }
+  75% { transform: rotate(3deg); }
+  100% { transform: rotate(0deg); }
+}
 
-  #languageSelector {
-    width: 100%;
-  }
+.audio-visualizer {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+  height: 30px;
+}
+
+.barra {
+  width: 6px;
+  height: 50%;
+  background-color: #e67e22;
+  border-radius: 4px;
+  transform: scaleY(1);
+  transition: transform 0.3s ease;
+}
+
+/* Animación activa */
+.barra.animar {
+  animation: subirBajar 1s infinite ease-in-out;
+}
+
+.barra:nth-child(1) { animation-delay: 0s; }
+.barra:nth-child(2) { animation-delay: 0.2s; }
+.barra:nth-child(3) { animation-delay: 0.4s; }
+.barra:nth-child(4) { animation-delay: 0.2s; }
+.barra:nth-child(5) { animation-delay: 0s; }
+
+@keyframes subirBajar {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(2); }
 }
