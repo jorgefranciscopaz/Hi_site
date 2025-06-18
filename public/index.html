@@ -45,14 +45,16 @@
       messagingSenderId: "959879050826",
       appId: "1:959879050826:web:cc6468563e186426a498b3"
     };
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Escuchar el último mensaje de /frases
+    // Escuchar último mensaje de frases y enviar a función leer automáticamente
     db.ref("frases").limitToLast(1).on("child_added", (snapshot) => {
       const datos = snapshot.val();
-      const mensaje = datos.mensaje;
-      document.getElementById("oracionTexto").textContent = mensaje ? `> ${mensaje}` : "Sin datos...";
+      const mensaje = datos.mensaje || "Sin datos...";
+      document.getElementById("oracionTexto").textContent = `> ${mensaje}`;
+      reproducirMensajeSiLibre(mensaje);
     });
   </script>
   <script src="script.js"></script>

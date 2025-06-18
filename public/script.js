@@ -1,4 +1,3 @@
-// Inicializar voces
 const selector = document.getElementById("languageSelector");
 
 function cargarVoces() {
@@ -20,6 +19,13 @@ if (speechSynthesis.getVoices().length > 0) {
 
 function leerMensajes() {
   const texto = document.getElementById("oracionTexto").textContent.replace(/^> /, "");
+  reproducirMensajeSiLibre(texto);
+}
+
+// === Función nueva para evitar solapamientos de audio ===
+function reproducirMensajeSiLibre(texto) {
+  if (speechSynthesis.speaking || !texto) return;
+
   const utterance = new SpeechSynthesisUtterance(texto);
   utterance.rate = 1;
 
@@ -32,17 +38,18 @@ function leerMensajes() {
 
   // Vibrar el icono
   const icono = document.getElementById("iconoSonido");
-  icono.classList.add("vibrando");
-  setTimeout(() => icono.classList.remove("vibrando"), 400);
+  if (icono) {
+    icono.classList.add("vibrando");
+    setTimeout(() => icono.classList.remove("vibrando"), 400);
+  }
 
   // Activar animación en las barras
   document.querySelectorAll('.barra').forEach(b => b.classList.add('animar'));
 
+  // Desactivar animación cuando termina
   utterance.onend = () => {
-    // Desactivar animación, vuelve a modo reposo
     document.querySelectorAll('.barra').forEach(b => b.classList.remove('animar'));
   };
 
   speechSynthesis.speak(utterance);
 }
-
