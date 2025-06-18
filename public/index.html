@@ -48,9 +48,11 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    db.ref("guante/oracion_actual").on("value", (snapshot) => {
-      const valor = snapshot.val();
-      document.getElementById("oracionTexto").textContent = valor ? `> ${valor}` : "Sin datos...";
+    // Escuchar el último mensaje de /frases
+    db.ref("frases").limitToLast(1).on("child_added", (snapshot) => {
+      const datos = snapshot.val();
+      const mensaje = datos.mensaje;
+      document.getElementById("oracionTexto").textContent = mensaje ? `> ${mensaje}` : "Sin datos...";
     });
   </script>
   <script src="script.js"></script>
