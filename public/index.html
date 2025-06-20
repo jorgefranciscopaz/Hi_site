@@ -3,38 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traductor de Guante</title>
+  <title>Traductor de Guante y Cámara</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="overlay">
-    <h1>Frase detectada por el guante:</h1>
-    <div class="line"></div>
+  <div class="grid-container">
 
-    <div class="message-box">
-      <div class="message" id="oracionTexto">Esperando datos...</div>
+    <!-- Sección Guante -->
+    <div class="overlay">
+      <h1>Frase detectada por el guante:</h1>
+      <div class="line"></div>
+      <div class="message-box">
+        <div class="message" id="oracionGuante">Esperando datos...</div>
+      </div>
+      <div class="language-selector-wrapper">
+        <label for="languageSelector1">Selecciona el idioma de lectura:</label>
+        <select id="languageSelector1"></select>
+        <button class="language-button" onclick="leerMensaje('guante')">
+          <span id="iconoSonidoGuante">🔊</span> Leer oración
+        </button>
+      </div>
+      <div id="visualizadorGuante" class="audio-visualizer">
+        <div class="barra"></div><div class="barra"></div><div class="barra"></div><div class="barra"></div><div class="barra"></div>
+      </div>
     </div>
 
-    <div class="language-selector-wrapper">
-      <label for="languageSelector">Selecciona el idioma de lectura:</label>
-      <select id="languageSelector"></select>
-      <button class="language-button" onclick="leerMensajes()">
-        <span id="iconoSonido">🔊</span> Leer oración
-      </button>
+    <!-- Sección Cámara -->
+    <div class="overlay">
+      <h1>Frase detectada por la cámara:</h1>
+      <div class="line"></div>
+      <div class="message-box">
+        <div class="message" id="oracionCamara">Esperando datos...</div>
+      </div>
+      <div class="language-selector-wrapper">
+        <label for="languageSelector2">Selecciona el idioma de lectura:</label>
+        <select id="languageSelector2"></select>
+        <button class="language-button" onclick="leerMensaje('camara')">
+          <span id="iconoSonidoCamara">🔊</span> Leer oración
+        </button>
+      </div>
+      <div id="visualizadorCamara" class="audio-visualizer">
+        <div class="barra"></div><div class="barra"></div><div class="barra"></div><div class="barra"></div><div class="barra"></div>
+      </div>
     </div>
 
-    <div id="visualizadorAudio" class="audio-visualizer">
-      <div class="barra"></div>
-      <div class="barra"></div>
-      <div class="barra"></div>
-      <div class="barra"></div>
-      <div class="barra"></div>
-    </div>
   </div>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCStxpdrM-1JUDytr_5e-kGXOryio7UV2k",
@@ -49,14 +67,21 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Escuchar último mensaje de frases y enviar a función leer automáticamente
-    db.ref("frases").limitToLast(1).on("child_added", (snapshot) => {
-      const datos = snapshot.val();
-      const mensaje = datos.mensaje || "Sin datos...";
-      document.getElementById("oracionTexto").textContent = `> ${mensaje}`;
-      reproducirMensajeSiLibre(mensaje);
+    // Último mensaje del nodo 'frases'
+    db.ref("frases").limitToLast(1).on("child_added", snapshot => {
+      const mensaje = snapshot.val().mensaje || "Sin datos...";
+      document.getElementById("oracionGuante").textContent = `> ${mensaje}`;
+      reproducirMensajeSiLibre(mensaje, 'guante');
+    });
+
+    // Lectura directa de guante/oracion_actual
+    db.ref("guante/oracion_actual").on("value", snapshot => {
+      const mensaje = snapshot.val() || "Sin datos...";
+      document.getElementById("oracionCamara").textContent = `> ${mensaje}`;
+      reproducirMensajeSiLibre(mensaje, 'camara');
     });
   </script>
+
   <script src="script.js"></script>
 </body>
 </html>

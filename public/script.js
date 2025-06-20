@@ -1,13 +1,19 @@
-const selector = document.getElementById("languageSelector");
+// Inicializar voces por origen
+const selectors = {
+  guante: document.getElementById("languageSelector1"),
+  camara: document.getElementById("languageSelector2"),
+};
 
 function cargarVoces() {
   const voces = speechSynthesis.getVoices();
-  selector.innerHTML = "";
-  voces.forEach((voz, index) => {
-    const option = document.createElement("option");
-    option.value = index;
-    option.textContent = `${voz.name} [${voz.lang}]`;
-    selector.appendChild(option);
+  Object.values(selectors).forEach(selector => {
+    selector.innerHTML = "";
+    voces.forEach((voz, index) => {
+      const option = document.createElement("option");
+      option.value = index;
+      option.textContent = `${voz.name} [${voz.lang}]`;
+      selector.appendChild(option);
+    });
   });
 }
 
@@ -17,39 +23,41 @@ if (speechSynthesis.getVoices().length > 0) {
   speechSynthesis.onvoiceschanged = cargarVoces;
 }
 
-function leerMensajes() {
-  const texto = document.getElementById("oracionTexto").textContent.replace(/^> /, "");
-  reproducirMensajeSiLibre(texto);
+function leerMensaje(origen) {
+  const texto = document.getElementById(`oracion${capitalize(origen)}`).textContent.replace(/^> /, "");
+  reproducirMensajeSiLibre(texto, origen);
 }
 
-// === Función nueva para evitar solapamientos de audio ===
-function reproducirMensajeSiLibre(texto) {
-  if (speechSynthesis.speaking || !texto) return;
+function reproducirMensajeSiLibre(texto, origen) {
+  if (speechSynthesis.speaking || !texto || texto === "Sin datos...") return;
 
   const utterance = new SpeechSynthesisUtterance(texto);
   utterance.rate = 1;
 
   const voces = speechSynthesis.getVoices();
+  const selector = selectors[origen];
   const vozSeleccionada = voces[selector.value];
+
   if (vozSeleccionada) {
     utterance.voice = vozSeleccionada;
     utterance.lang = vozSeleccionada.lang;
   }
 
-  // Vibrar el icono
-  const icono = document.getElementById("iconoSonido");
-  if (icono) {
-    icono.classList.add("vibrando");
-    setTimeout(() => icono.classList.remove("vibrando"), 400);
-  }
+  // Visualización
+  const barras = document.querySelectorAll(`#visualizador${capitalize(origen)} .barra`);
+  const icono = document.getElementById(`iconoSonido${capitalize(origen)}`);
 
-  // Activar animación en las barras
-  document.querySelectorAll('.barra').forEach(b => b.classList.add('animar'));
+  if (icono) icono.classList.add("vibrando");
+  barras.forEach(b => b.classList.add("animar"));
 
-  // Desactivar animación cuando termina
   utterance.onend = () => {
-    document.querySelectorAll('.barra').forEach(b => b.classList.remove('animar'));
+    barras.forEach(b => b.classList.remove("animar"));
+    if (icono) icono.classList.remove("vibrando");
   };
 
   speechSynthesis.speak(utterance);
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
