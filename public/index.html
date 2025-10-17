@@ -71,14 +71,14 @@
     db.ref("frases").limitToLast(1).on("child_added", snapshot => {
       const mensaje = snapshot.val().mensaje || "Sin datos...";
       document.getElementById("oracionGuante").textContent = `> ${mensaje}`;
-      reproducirMensajeSiLibre(mensaje, 'guante');
+      reproducirMensajeSiLibre(mensaje, 'camara');
     });
 
     // Lectura directa de guante/oracion_actual
     db.ref("guante/oracion_actual").on("value", snapshot => {
       const mensaje = snapshot.val() || "Sin datos...";
       document.getElementById("oracionCamara").textContent = `> ${mensaje}`;
-      reproducirMensajeSiLibre(mensaje, 'camara');
+      reproducirMensajeSiLibre(mensaje, 'guante');
     });
   </script>
 
